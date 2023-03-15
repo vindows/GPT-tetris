@@ -30,10 +30,59 @@ let dropCounter = 0;
 let dropInterval = 1000;
 let lastTime = 0;
 let score = 0;
+let highestScore = 0;
+let gameActive = true;
 
 function updateScore() {
   document.getElementById('score').innerText = `Score: ${score}`;
 }
+
+function updateHighestScore() {
+  document.getElementById('highest-score').innerText = `Highest Score: ${highestScore}`;
+}
+
+function gameOver() {
+  if (collide(arena, player)) {
+    arena.forEach(row => row.fill(0));
+    playerReset();
+    updateHighestScore();
+    document.getElementById('game-over').style.display = 'flex';
+    document.getElementById('game-container').style.display = 'none';
+    gameActive = false;
+    return;
+  }
+}
+
+// ... (rest of the code remains the same)
+
+function playerReset() {
+  const pieces = 'TJLOSZI';
+  player.matrix = createPiece(pieces[(pieces.length * Math.random()) | 0]);
+  player.pos.y = 0;
+  player.pos.x = ((arena[0].length / 2) | 0) - ((player.matrix[0].length / 2) | 0);
+
+  if (collide(arena, player)) {
+    arena.forEach(row => row.fill(0));
+    updateHighestScore();
+    document.getElementById('game-over').style.display = 'flex';
+    document.getElementById('board').style.display = 'none';
+    gameActive = false;
+  }
+}
+
+function restartGame() {
+  document.getElementById('game-over').style.display = 'none';
+  document.getElementById('game-container').style.display = 'block';
+  score = 0;
+  updateScore();
+  playerReset();
+  gameActive = true;
+  update();
+}
+
+
+// ... (rest of the code remains the same)
+
 
 function arenaSweep() {
   outer: for (let y = arena.length - 1; y > 0; --y) {
@@ -50,6 +99,11 @@ function arenaSweep() {
     // Increase score
     score += 10;
     updateScore();
+
+    // Update highest score
+    if (score > highestScore) {
+      highestScore = score;
+      updateHighestScore();
   }
 }
 
@@ -161,13 +215,18 @@ function rotate(matrix, dir = 1) {
 
 function update(time = 0) {
   const deltaTime = time - lastTime;
+  lastTime = time;
+
   dropCounter += deltaTime;
   if (dropCounter > dropInterval) {
     playerDrop();
   }
-  lastTime = time;
+
   draw();
-  requestAnimationFrame(update);
+  
+  if (gameActive) {
+    requestAnimationFrame(update);
+  }
 }
 
 function createPiece(type) {
@@ -236,5 +295,15 @@ document.addEventListener('keydown', event => {
   }
 });
 
-resetPlayer();
-update();
+
+function init() {
+  resetPlayer();
+  update();
+
+  // Set up the event listener for the restart button
+  document.getElementById('restart-button').addEventListener('click', () => {
+    restartGame();
+  });
+}
+
+init();
