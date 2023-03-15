@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!--meta name="viewport" content="width=device-width, initial-scale=1.0"-->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <title>Tetris</title>
+  <style>
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
+      font-family: Arial, sans-serif;
+    }
+    
+    canvas {
+      display: block;
+      width: 100%;
+      max-width: 320px;
+      background-color: #222;
+      border: 1px solid #fff;
+    }
+    
+    #score {
+      font-size: 20px;
+      color: #fff;
+      text-align: center;
+      padding-top: 10px;
+      width: 100%;
+      max-width: 320px;
+    }
+    
+    
+  </style>
+</head>
+<body>
+  <canvas id="board" width="320" height="640"></canvas>
+  <script src="tetris.js"></script>
+  <div id="score">Score: 0</div>
+</body>
+</html>
